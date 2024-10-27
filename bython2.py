@@ -21,11 +21,12 @@ macros = {
     ":=": "=",
     "::": ".",
     "->": ":",
+    "of":":",
     "begin":"{",
     "end":("raw_insert", "}"),
     "module":"class",
     "constructor":"def __init__",
-    "deconstructor":"def __del__",
+    "destructor":"def __del__",
     "__include_comments__":True # this is to add context to the generated python code
                                 # use `#unset: __include_comments__` to disable it
 }
@@ -55,7 +56,7 @@ def get_this(code):
             else:
                 print(f"Macro Processing [line {line}]: Tried to unset {name} but it wasnt defined.")
         elif i.startswith("#ADD_REGEX:"):
-            result = eval(f"{repr(i[11:].strip())}", {'__builtins__':simple_builtins})
+            result = eval(f"{i[11:].strip()}", {'__builtins__':simple_builtins})
             tokens += "|" + result
         else:
             res.append(i)
@@ -66,10 +67,8 @@ def tokenize(code):
 
 setup_code = """#!/usr/bin/env python$version$
 ### THIS IS BIOLER PLATE TO BE ABLE TO IMPORT BYTHON2 DIRECTLY AND FOR BYTHON2 TO FUNCTION ###
-import importlib.util
-import sys
-import os
-import subprocess
+# use `#def: __standalone__` to not generate the importer code.
+import importlib.util,sys,os,subprocess
 _bython2_path = os.getenv("BYTHON2PATH");_python_major_version = $version$
 if _bython2_path is None: raise Exception("BYTHON2PATH environment variable was not set.")
 _bython2_cache_dir = os.path.join(os.getcwd(), "__by2cache__")
@@ -167,6 +166,9 @@ def translate(code):
                     case ["raw_insert", thing]:
                         line.append(thing)
                         res.append((ind, " ".join(line)))
+                        line.clear()
+                    case ["line", thing]:
+                        res.append((ind, thing))
                         line.clear()
                     case ["line_end"]:
                         res.append((ind, " ".join(line)))

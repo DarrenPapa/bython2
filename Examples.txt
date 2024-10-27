@@ -1,0 +1,80 @@
+The following will be an example on how to use Bython2
+
+Basics and classes...
+```
+# define an entry point
+#macro: ("__entry__","main")
+# We unset this so the comments doesn't get transferred
+#unset: __include_comments__
+
+# The last statement in a code block doesn't need a
+# semicolon at the end.
+
+# although at the module level it isn't possible.
+# a warning will be printed though.
+
+class person {
+	constructor(self, name)	{
+		self::name = name
+	}
+	def greet(self, name) {
+		print(f"Hello {name}, I am {self::name}")
+	}
+	destructor(self) {
+		print("I just got killed!")
+	}
+}
+
+def main(argc, argv) {
+	# `this` is defined in the setup code.
+	# The code above is from the line: import __main__ as this
+	my_person = this::person("Jake");
+	my_person::greet("James");
+	return 0;
+}
+```
+
+In bython2 you dont need a function to import other bython2 code.
+You can use import directly as in the setup code a importer is defined.
+
+test.by2
+```
+def test() {print("IT FREAKING WORKS!")}
+```
+
+main.by2
+```
+# if test.by2 is in the local path
+# or in the search path.
+from test import test
+
+test();
+```
+
+In bython2 you can get more syntaxtic freedom as you can define your own syntax
+using regex. But that isnt optimal as it can reduce readability.
+
+This is very good for debugging.
+```
+#ADD_REGEX: "\?\?\?"
+#macro: ("???", "print(locals())")
+???;
+```
+
+Using macros you can even define your own way of indenting stuff!
+Although ironically it doesn't work well for whitespace :)
+
+Below is a simple db implementation using dicts.
+```
+
+my_dict = begin
+	"name" -> "carl";
+end
+
+print(my_dict["name"]);
+
+# type hints
+
+my_string of str = "This is a string!";
+
+```
